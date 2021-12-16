@@ -1,6 +1,31 @@
 import { gql } from '@apollo/client/core';
 
+const ISSUES_FRAGMENT = gql`
+  fragment issues on Repository {
+    issues(last: 5) {
+      edges {
+        node {
+          id
+          number
+          url
+          title
+          createdAt
+          author {
+            avatarUrl
+            login
+            url
+          }
+          bodyText
+        }
+      }
+      totalCount
+    }
+  }
+`
+
 const REPO_FRAGMENT = gql`
+  ${ISSUES_FRAGMENT}
+
   fragment repo on Repository {
     id
     name
@@ -32,6 +57,7 @@ const REPO_FRAGMENT = gql`
         }
       }
     }
+    ...issues
   }
 `
 

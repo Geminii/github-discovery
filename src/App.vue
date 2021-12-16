@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-100 min-h-screen">
+  <div class="bg-gray-100 min-h-screen py-5">
     <header class="max-w-6xl mx-auto flex justify-between">
       <router-link :to="{ name: 'home' }">
         <Logo class="w-36 h-36" />
