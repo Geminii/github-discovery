@@ -24,11 +24,10 @@
           v-for="repository in repositories"
           :key="repository.node.id"
         >
-          <div
-            class="flex justify-between rounded-lg border-l-8 border-emerald-500 px-8 py-4 shadow-lg relative overflow-hidden transform ease-in-out duration-300 hover:scale-105 hover:shadow-emerald-100"
-          >
-            <pre>{{ repository.node }}</pre>
-          </div>
+          <Repository
+            :repository="repository.node"
+            :search-options="searchOptions"
+          />
         </li>
       </ul>
     </div>
