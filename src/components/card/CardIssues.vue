@@ -3,7 +3,7 @@
     <div class="bg-white shadow sm:rounded-lg">
       <div class="px-4 py-5 sm:px-6 flex justify-between items-center border-b border-gray-200">
         <h2 class="text-lg leading-6 font-medium text-gray-900">
-          Latest issues
+          Latest opened issues
         </h2>
         <div class="inline-flex bg-gray-900 px-2 py-1 border border-transparent text-base font-medium rounded-md shadow-sm text-white">
           {{ issues.totalCount }}
@@ -33,7 +33,7 @@
               </svg>
             </span>
           </div>
-          <div class="min-w-0 flex-1 text-left">
+          <div class="min-w-0 flex-1">
             <div>
               <div class="text-sm">
                 <a 
@@ -46,7 +46,7 @@
                 </a>
               </div>
               <p class="mt-0.5 text-sm text-gray-500">
-                Created 6d ago
+                Created {{ formattedDate(issue.node.createdAt) }}
               </p>
             </div>
             <div class="mt-2 text-sm text-gray-700">
@@ -73,6 +73,7 @@
 <script lang="ts">
 import { IIssues } from '@/interfaces/Issue.interface'
 import { defineComponent, PropType } from 'vue'
+import { formatDistanceFromNow } from '@/utils/format'
 
 export default defineComponent({
   name: 'CardIssues',
@@ -87,7 +88,13 @@ export default defineComponent({
     }
   },
   setup() {
-    
+    const formattedDate = (createdAt: string): string => {
+      return formatDistanceFromNow(createdAt);
+    }
+
+    return {
+      formattedDate,
+    }
   },
 })
 </script>

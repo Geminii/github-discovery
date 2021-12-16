@@ -24,7 +24,7 @@
         <span v-if="repository.licenseInfo">
           - {{ repository.licenseInfo?.name }}
         </span>
-        <span> - {{ formatUpdatedAt(repository.updatedAt) }} </span>
+        <span> - {{ formattedDate(repository.updatedAt) }} </span>
       </div>
       <div
         v-if="repository.repositoryTopics.edges.length > 0"
@@ -106,6 +106,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import { formatDistance } from 'date-fns';
+import { formatDistanceFromNow } from '@/utils/format';
 
 import { IRepository } from '@/interfaces/Repository.interface';
 
@@ -118,14 +119,12 @@ export default defineComponent({
     }
   },
   setup() {
-    const formatUpdatedAt = (updatedAt: string): string => {
-      return formatDistance(new Date(updatedAt), new Date(), {
-        addSuffix: true
-      });
+    const formattedDate = (updatedAt: string): string => {
+      return formatDistanceFromNow(updatedAt);
     };
 
     return {
-      formatUpdatedAt
+      formattedDate
     };
   }
 });

@@ -2,7 +2,7 @@ import { gql } from '@apollo/client/core';
 
 const ISSUES_FRAGMENT = gql`
   fragment issues on Repository {
-    issues(last: 5) {
+    issues(last: 5, orderBy: { field: UPDATED_AT, direction: ASC }, states: OPEN) {
       edges {
         node {
           id

@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-6xl mx-auto mt-12 text-right mb-6">
+  <div class="max-w-6xl mx-auto mt-12 mb-6">
     <div class="flex justify-center" v-if="loading">
       <Loading class="w-56 h-56" />
     </div>
@@ -16,9 +16,10 @@
             :repository-name="repository.nameWithOwner"
             :issues="repository.issues" 
           />
-
-          <!-- Release timeline -->
         </div>
+
+        <!-- Release timeline -->
+        <ReleaseTimeline />
       </div>
     </template>
   </div>
