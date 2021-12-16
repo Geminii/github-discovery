@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex justify-between rounded-lg border-l-8 border-emerald-500 px-8 py-4 shadow-lg relative overflow-hidden transform ease-in-out duration-300 hover:scale-105 hover:shadow-emerald-100"
+    class="flex justify-between rounded-lg bg-white border-l-8 border-emerald-500 px-8 py-4 shadow-lg relative overflow-hidden transform ease-in-out duration-300 hover:scale-105 hover:shadow-emerald-100"
   >
     <div class="max-w-[70%]">
       <div class="flex items-center gap-2" v-if="repository.owner">
@@ -108,17 +108,12 @@ import { defineComponent, PropType } from 'vue';
 import { formatDistance } from 'date-fns';
 
 import { IRepository } from '@/interfaces/Repository.interface';
-import { ISearchOptions } from '@/interfaces/Search.interface';
 
 export default defineComponent({
   name: 'Repository',
   props: {
     repository: {
       type: Object as PropType<IRepository>,
-      required: true
-    },
-    searchOptions: {
-      type: Object as PropType<ISearchOptions>,
       required: true
     }
   },

@@ -24,10 +24,9 @@
           v-for="repository in repositories"
           :key="repository.node.id"
         >
-          <Repository
-            :repository="repository.node"
-            :search-options="searchOptions"
-          />
+          <router-link :to="{ name: 'repository', params: { repositoryId: repository.node.id } }">
+            <Repository :repository="repository.node" />
+          </router-link>
         </li>
       </ul>
     </div>
