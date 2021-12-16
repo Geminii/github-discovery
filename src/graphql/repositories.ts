@@ -2,7 +2,7 @@ import { gql } from '@apollo/client/core';
 
 const RELEASES_FRAGMENT = gql`
   fragment releases on Repository {
-    releases(last: 5, orderBy: { field: CREATED_AT, direction: DESC }) {
+    releases(last: 5, orderBy: { field: CREATED_AT, direction: ASC }) {
       edges {
         node {
           id
