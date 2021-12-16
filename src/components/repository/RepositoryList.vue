@@ -1,9 +1,9 @@
 <template>
   <div class="flex justify-center" v-if="loading">
-    <p class="text-xl font-bold text-gray-500">Request is loading...</p>
+    <Loading />
   </div>
   <div class="flex justify-center" v-else-if="error">
-    <p class="text-xl font-bold text-red-600">Request has failed !</p>
+    <Error class="w-72 h-72" />
   </div>
   <template v-else-if="repositories.length">
     <div class="md:block max-w-6xl mx-auto">

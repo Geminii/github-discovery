@@ -1,14 +1,10 @@
 <template>
   <div class="max-w-6xl mx-auto mt-12 text-right mb-6">
     <div class="flex justify-center" v-if="loading">
-      <p class="text-xl font-bold text-gray-500">
-        Request is loading...
-      </p>
+      <Loading class="w-56 h-56" />
     </div>
     <div class="flex justify-center" v-else-if="error">
-      <p class="text-xl font-bold text-red-600">
-        Request has failed !
-      </p>
+      <Error class="w-72 h-72" />
     </div>
     <template v-else>
       <Repository :repository="repository" />
