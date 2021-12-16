@@ -15,7 +15,7 @@
       </h1>
     </header>
 
-    <main class="max-w-6xl mx-auto mt-4">
+    <main class="max-w-6xl mx-auto mt-4 mb-4">
       <router-view />
     </main>  
   </div>

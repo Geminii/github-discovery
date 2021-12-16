@@ -1,6 +1,7 @@
 <template>
   <div
-    class="flex justify-between rounded-lg bg-white border-l-8 border-emerald-500 px-8 py-4 shadow-lg relative overflow-hidden transform ease-in-out duration-300 hover:scale-105 hover:shadow-emerald-100"
+    class="flex justify-between rounded-lg bg-white border-l-8 border-emerald-500 px-8 py-4 shadow-lg relative overflow-hidden transform ease-in-out duration-300"
+    :class="{ 'hover:scale-105 hover:shadow-emerald-100': animation }"
   >
     <div class="max-w-[70%]">
       <div class="flex items-center gap-2" v-if="repository.owner">
@@ -38,18 +39,23 @@
           {{ topic.node.topic.name }}
         </div>
       </div>
-      <p v-else class="text-slate-400 font-semibold">-- No tags founds</p>
+      <p v-else class="text-slate-400 font-semibold">
+        -- No tags founds
+      </p>
     </div>
     <div>
-      <div class="flex gap-2 items-center justify-center">
-        <span class="uppercase text-md text-gray-500">Stargazers</span>
+      <button
+        class="flex gap-2 items-center justify-center ease-in-out duration-300 border border-transparent hover:border-gray-200 rounded-lg p-2"
+        :class="{
+          'text-gray-500 hover:text-amber-300': !repository.viewerHasStarred,
+          'text-amber-300': repository.viewerHasStarred
+        }"
+        @click.prevent="starred"
+      >
+        <span class="uppercase text-md">Stargazers</span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-5 w-5"
-          :class="{
-            'text-gray-500 hover:text-amber-300': !repository.viewerHasStarred,
-            'text-amber-300': repository.viewerHasStarred
-          }"
           viewBox="0 0 20 20"
           fill="currentColor"
         >
@@ -57,7 +63,7 @@
             d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
           />
         </svg>
-      </div>
+      </button>
       <div class="text-4xl text-right mt-12 relative">
         <span class="z-10 relative">{{
           repository.stargazers.totalCount
@@ -104,7 +110,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, toRefs } from 'vue';
 import { formatDistanceFromNow } from '@/utils/format';
 
 import { IRepository } from '@/interfaces/Repository.interface';
@@ -115,15 +121,26 @@ export default defineComponent({
     repository: {
       type: Object as PropType<IRepository>,
       required: true
+    },
+    animation: {
+      type: Boolean,
+      default: false
     }
   },
-  setup() {
+  setup(props) {
+    const repository = toRefs(props);
     const formattedDate = (updatedAt: string): string => {
       return formatDistanceFromNow(updatedAt);
     };
 
+    const starred = (): void => {
+      // TODO(implement)
+      console.log('starred ?', repository)
+    }
+
     return {
-      formattedDate
+      formattedDate,
+      starred,
     };
   }
 });

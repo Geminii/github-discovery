@@ -25,10 +25,21 @@
           :key="repository.node.id"
         >
           <router-link :to="{ name: 'repository', params: { repositoryId: repository.node.id } }">
-            <Repository :repository="repository.node" />
+            <Repository 
+              :repository="repository.node" 
+              animation
+            />
           </router-link>
         </li>
       </ul>
+    </div>
+  </template>
+  <template v-else>
+    <div class="flex flex-col justify-center items-center">
+      <IconRelaunch class="w-64 h-64" />
+      <p class="text-xl mt-4 text-amber-400">
+        No result found ...
+      </p>
     </div>
   </template>
 </template>
@@ -39,9 +50,13 @@ import { useQuery, useResult } from '@vue/apollo-composable';
 import { SearchResultItemConnection } from '@octokit/graphql-schema';
 import { SEARCH_REPOS } from '@/graphql/repositories';
 import { ISearchOptions } from '@/interfaces/Search.interface';
+import IconRelaunch from '@/assets/svg/relaunch.svg?component';
 
 export default defineComponent({
   name: 'RepositoryList',
+  components: {
+    IconRelaunch,
+  },
   props: {
     searchOptions: {
       type: Object as PropType<ISearchOptions>,

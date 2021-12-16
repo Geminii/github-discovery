@@ -3,7 +3,12 @@
 
   <RepositoryList v-if="hasQuery" :search-options="searchOptions" />
 
-  <IconWaitingSearch v-else class="w-72 h-72 mx-auto" />
+  <div v-else class="flex flex-col justify-center items-center">
+    <IconWaitingSearch class="w-72 h-72" />
+    <p class="text-xl text-emerald-500">
+      Ready for takeoff !
+    </p>
+  </div>
 </template>
 
 <script lang="ts">
