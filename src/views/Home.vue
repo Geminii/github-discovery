@@ -1,13 +1,15 @@
 <template>
-  <SearchBar @search="search" />
+  <div>
+    <SearchBar @search="search" />
 
-  <RepositoryList v-if="hasQuery" :search-options="searchOptions" />
+    <RepositoryList v-if="hasQuery" :search-options="searchOptions" />
 
-  <div v-else class="flex flex-col justify-center items-center">
-    <IconWaitingSearch class="w-72 h-72" />
-    <p class="text-xl text-emerald-500">
-      Ready for takeoff !
-    </p>
+    <div v-else class="flex flex-col justify-center items-center">
+      <IconWaitingSearch class="w-72 h-72" />
+      <p class="text-xl text-emerald-500">
+        Ready for takeoff !
+      </p>
+    </div>
   </div>
 </template>
 

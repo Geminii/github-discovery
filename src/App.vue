@@ -16,7 +16,11 @@
     </header>
 
     <main class="max-w-6xl mx-auto mt-4 mb-4">
-      <router-view />
+      <router-view v-slot="{ Component }">
+        <transition name="fade">
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </main>  
   </div>
 </template>
@@ -32,3 +36,15 @@ export default defineComponent({
   }
 });
 </script>
+
+<style lang="scss" scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
