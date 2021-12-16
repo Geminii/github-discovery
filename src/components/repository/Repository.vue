@@ -1,7 +1,7 @@
 <template>
   <div
     class="flex justify-between rounded-lg bg-white border-l-8 border-emerald-500 px-8 py-4 shadow-lg relative overflow-hidden transform ease-in-out duration-300"
-    :class="{ 'hover:scale-105 hover:shadow-emerald-100': animation }"
+    :class="{ 'hover:scale-105 hover:shadow-emerald-100': listing }"
   >
     <div class="max-w-[70%]">
       <div class="flex items-center gap-2" v-if="repository.owner">
@@ -45,12 +45,12 @@
     </div>
     <div>
       <button
-        class="flex gap-2 items-center justify-center ease-in-out duration-300 border border-transparent hover:border-gray-200 rounded-lg p-2"
+        class="flex gap-2 items-center justify-center ease-in-out duration-200 border border-transparent hover:border-gray-200 focus:border-amber-300 rounded-lg p-2"
         :class="{
           'text-gray-500 hover:text-amber-300': !repository.viewerHasStarred,
           'text-amber-300': repository.viewerHasStarred
         }"
-        @click.prevent="starred"
+        @click.prevent="handleStar"
       >
         <span class="uppercase text-md">Stargazers</span>
         <svg
@@ -112,35 +112,215 @@
 <script lang="ts">
 import { defineComponent, PropType, toRefs } from 'vue';
 import { formatDistanceFromNow } from '@/utils/format';
+import { useMutation } from "@vue/apollo-composable";
+import {
+  AddStarPayload,
+  AddStarInput,
+  RemoveStarPayload,
+  RemoveStarInput,
+  Repository,
+  SearchResultItemConnection,
+  Node
+} from "@octokit/graphql-schema";
 
 import { IRepository } from '@/interfaces/Repository.interface';
+import { ADD_STAR, GET_REPO, REMOVE_STAR, SEARCH_REPOS } from '@/graphql/repositories';
+import { ISearchOptions } from '@/interfaces/Search.interface';
+import { ApolloCache } from '@apollo/client/cache';
+
+interface CacheData {
+  [propName: string]: AddStarPayload | RemoveStarPayload;
+}
+
+interface QueryVariables {
+  [propName: string]: number | string;
+}
 
 export default defineComponent({
   name: 'Repository',
   props: {
+    searchOptions: {
+      type: Object as PropType<ISearchOptions>,
+      default: () => {
+        return {
+          query: '',
+          limit: 10
+        };
+      }
+    },
     repository: {
       type: Object as PropType<IRepository>,
       required: true
     },
-    animation: {
+    listing: {
       type: Boolean,
       default: false
     }
   },
   setup(props) {
-    const repository = toRefs(props);
+    let selectedId: string;
+    const { repository, searchOptions, listing } = toRefs(props);
     const formattedDate = (updatedAt: string): string => {
       return formatDistanceFromNow(updatedAt);
     };
 
-    const starred = (): void => {
-      // TODO(implement)
-      console.log('starred ?', repository)
-    }
+    const overrideSearchMutationStarCache = (
+      mutation: string,
+      cache: ApolloCache<CacheData>,
+      data: CacheData | null | undefined,
+      queryVariables: QueryVariables,
+      calcNewTotal: (totalCount: number) => number
+    ) => {
+      const cachedData = cache.readQuery<{
+        search: SearchResultItemConnection;
+      }>({
+        query: SEARCH_REPOS,
+        variables: queryVariables
+      });
+      cache.writeQuery({
+        query: SEARCH_REPOS,
+        data: Object.assign({}, cachedData, {
+          search: {
+            edges: cachedData!.search.edges!.map(edge => {
+              const repo = edge!.node as Repository;
+              const clonedRepo = {
+                ...repo,
+                stargazers: { ...repo.stargazers }
+              };
+
+              if (clonedRepo.id === data![mutation].starrable!.id) {
+                clonedRepo.viewerHasStarred = data![
+                  mutation
+                ].starrable!.viewerHasStarred;
+                clonedRepo.stargazers.totalCount = calcNewTotal(
+                  clonedRepo.stargazers.totalCount
+                );
+              }
+
+              return {
+                ...edge,
+                node: clonedRepo
+              };
+            })
+          }
+        })
+      });
+    };
+
+    const overrideRepositoryDetailMutationStarCache = (
+      mutation: string,
+      cache: ApolloCache<CacheData>,
+      data: CacheData | null | undefined,
+      queryVariables: QueryVariables,
+      calcNewTotal: (totalCount: number) => number
+    ) => {
+      const cachedData = cache.readQuery<{
+        node: Node;
+      }>({
+        query: GET_REPO,
+        variables: queryVariables
+      });
+
+      const nodeCachedData = cachedData?.node as Repository
+      let clonedRepo = {
+        ...nodeCachedData,
+        stargazers: { ...nodeCachedData.stargazers }
+      };
+
+      if (clonedRepo.id === data![mutation].starrable!.id) {
+        clonedRepo.viewerHasStarred = data![mutation].starrable!.viewerHasStarred;
+        clonedRepo.stargazers.totalCount = calcNewTotal(
+          clonedRepo.stargazers.totalCount
+        );
+      }
+
+      cache.writeQuery({
+        query: GET_REPO,
+        data: Object.assign({}, cachedData, {
+          node: clonedRepo
+        })
+      });
+    };
+
+    const { mutate: starRepo } = useMutation<
+      { addStar: AddStarPayload },
+      { repositoryId: AddStarInput["starrableId"] }
+    >(ADD_STAR, () => ({
+      variables: {
+        repositoryId: selectedId
+      },
+      update: (cache, { data }) => {
+        if (listing.value) {
+          overrideSearchMutationStarCache(
+            "addStar",
+            cache,
+            data,
+            searchOptions.value,
+            totalCount => totalCount + 1
+          );
+        } else {
+          overrideRepositoryDetailMutationStarCache(
+            "addStar",
+            cache,
+            data,
+            {
+              nodeId: repository.value.id
+            },
+            totalCount => totalCount + 1
+          );
+        }
+      }
+    }));
+
+    const { mutate: unstarRepo } = useMutation<
+      {
+        removeStar: RemoveStarPayload;
+      },
+      { repositoryId: RemoveStarInput["starrableId"] }
+    >(REMOVE_STAR, () => ({
+      variables: {
+        repositoryId: selectedId
+      },
+      update: (cache, { data }) => {
+        if (listing.value) {
+          overrideSearchMutationStarCache(
+            "removeStar",
+            cache,
+            data,
+            searchOptions.value,
+            totalCount => totalCount - 1
+          );
+        } else {
+          overrideRepositoryDetailMutationStarCache(
+            "removeStar",
+            cache,
+            data,
+            {
+              nodeId: repository.value.id
+            },
+            totalCount => totalCount - 1
+          );
+        }
+      }
+    }));
+
+    const handleStar = (evt: Event) => {
+      evt.stopPropagation();
+      evt.preventDefault();
+
+      const { id, viewerHasStarred } = repository.value;
+      selectedId = id;
+
+      if (viewerHasStarred) {
+        unstarRepo();
+      } else {
+        starRepo();
+      }
+    };
 
     return {
       formattedDate,
-      starred,
+      handleStar,
     };
   }
 });

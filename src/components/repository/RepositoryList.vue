@@ -26,8 +26,9 @@
         >
           <router-link :to="{ name: 'repository', params: { repositoryId: repository.node.id } }">
             <Repository 
-              :repository="repository.node" 
-              animation
+              :repository="repository.node"
+              :search-options="searchOptions"
+              listing
             />
           </router-link>
         </li>

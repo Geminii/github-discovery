@@ -102,3 +102,25 @@ export const GET_REPO = gql`
     }
   }
 `
+
+export const ADD_STAR = gql`
+  mutation($repositoryId: ID!) {
+    addStar(input: { starrableId: $repositoryId }) {
+      starrable {
+        id
+        viewerHasStarred
+      }
+    }
+  }
+`;
+
+export const REMOVE_STAR = gql`
+  mutation($repositoryId: ID!) {
+    removeStar(input: { starrableId: $repositoryId }) {
+      starrable {
+        id
+        viewerHasStarred
+      }
+    }
+  }
+`;
