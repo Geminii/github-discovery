@@ -105,7 +105,6 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { formatDistance } from 'date-fns';
 import { formatDistanceFromNow } from '@/utils/format';
 
 import { IRepository } from '@/interfaces/Repository.interface';

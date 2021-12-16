@@ -18,8 +18,11 @@
           />
         </div>
 
-        <!-- Release timeline -->
-        <ReleaseTimeline />
+        <!-- Latest release -->
+        <ReleaseTimeline 
+          :repository-name="repository.nameWithOwner"
+          :releases="repository.releases" 
+        />
       </div>
     </template>
   </div>

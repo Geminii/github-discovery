@@ -1,5 +1,21 @@
 import { gql } from '@apollo/client/core';
 
+const RELEASES_FRAGMENT = gql`
+  fragment releases on Repository {
+    releases(last: 5, orderBy: { field: CREATED_AT, direction: DESC }) {
+      edges {
+        node {
+          id
+          url
+          tagName        
+          createdAt
+        }
+      }
+      totalCount
+    }
+  }
+`
+
 const ISSUES_FRAGMENT = gql`
   fragment issues on Repository {
     issues(last: 5, orderBy: { field: UPDATED_AT, direction: ASC }, states: OPEN) {
@@ -25,6 +41,7 @@ const ISSUES_FRAGMENT = gql`
 
 const REPO_FRAGMENT = gql`
   ${ISSUES_FRAGMENT}
+  ${RELEASES_FRAGMENT}
 
   fragment repo on Repository {
     id
@@ -58,6 +75,7 @@ const REPO_FRAGMENT = gql`
       }
     }
     ...issues
+    ...releases
   }
 `
 
