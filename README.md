@@ -1,3 +1,45 @@
+# GitHub Discovery
+
+> Discover GitHub through GraphQL with Vue3 and ViteJs
+
+<div align="center">
+  <img src="./public/screenshots/gh-landing.png" height="175px" />
+  <img src="./public/screenshots/gh-search.png" height="175px" />
+  <img src="./public/screenshots/gh-details.png" height="175px" />
+</div>
+
+## Technologies used
+
+- ⚡️ [ViteJs](https://github.com/vitejs/vite) with [Vue3](https://github.com/vuejs/vue-next)
+
+- 🎨 [TailwindCss](https://tailwindcss.com/) and [Sass](https://sass-lang.com/)
+
+- 🛣 [Vue-Router](https://next.router.vuejs.org/)
+
+- 🚀 [Vue Apollo GraphQL](https://v4.apollo.vuejs.org/)
+
+- 🔥 [Auto import components](https://github.com/antfu/unplugin-vue-components)
+
+- 🎇 [Svg Loader](https://github.com/jpkleemans/vite-svg-loader)
+
+- 🦾 [TypeScript](https://www.typescriptlang.org/)
+
+## Table of Contents
+- [Vue 3 + Typescript + Vite](#vue-3---typescript---vite)
+  * [Recommended IDE Setup](#recommended-ide-setup)
+    + [If Using `<script setup>`](#if-using---script-setup--)
+  * [Type Support For `.vue` Imports in TS](#type-support-for--vue--imports-in-ts)
+    + [If Using Volar](#if-using-volar)
+    + [If Using Vetur](#if-using-vetur)
+  * [Project setup](#project-setup)
+    + [🤖 &nbsp;Create Github token](#----nbsp-create-github-token)
+    + [⚙️ &nbsp;Setup environment variables](#----nbsp-setup-environment-variables)
+    + [🖲 &nbsp;Commands line](#----nbsp-commands-line)
+      - [Compiling and enabling hot-reloads for development](#compiling-and-enabling-hot-reloads-for-development)
+      - [Lints and fixes files](#lints-and-fixes-files)
+  * [Icons](#icons)
+    + [Import icon in component](#import-icon-in-component)
+
 # Vue 3 + Typescript + Vite
 
 This template should help get you started developing with Vue 3 and Typescript in Vite.
